@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Wuthering Waves GeoGuessr</title>
+
+  <style>
+
+    body {
+
+      margin: 0;
+
+      padding-left: 10px;
+      padding-right: 10px;
+
+      box-sizing: border-box;
+
+      background:
+      linear-gradient(
+        180deg,
+        #111827,
+        #0f172a,
+        #020617
+      );
+
+      color: white;
+
+      font-family: Arial, sans-serif;
+
+      text-align: center;
+
+      overflow-x: hidden;
+
+    }
+
+    h1 {
+
+      margin-top: 20px;
+
+      font-size: 48px;
+
+      color: #8ab4ff;
+
+      text-shadow:
+        0 0 20px rgba(138,180,255,0.5);
+
+    }
+
+    #creatorText {
+
+      color: #cbd5e1;
+
+      margin-top: -10px;
+
+      font-size: 18px;
+
+      margin-bottom: 20px;
+
+    }
+
+    #topBar {
+
+      display: flex;
+
+      justify-content: center;
+
+      gap: 25px;
+
+      margin-top: 10px;
+
+      flex-wrap: wrap;
+
+    }
+
+    .topBox {
+
+      background:
+      rgba(255,255,255,0.05);
+
+      padding: 12px 20px;
+
+      border-radius: 14px;
+
+      border:
+      1px solid rgba(255,255,255,0.08);
+
+      backdrop-filter: blur(8px);
+
+      font-size: 22px;
+
+      box-shadow:
+      0 0 15px rgba(255,255,255,0.03);
+
+    }
+
+    #musicButton {
+
+      margin-top: 20px;
+
+      padding: 10px 22px;
+
+      font-size: 18px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      background:
+      rgba(255,255,255,0.08);
+
+      color: white;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+
+    }
+
+    #musicButton:hover {
+
+      background:
+      rgba(255,255,255,0.15);
+
+      transform: scale(1.03);
+
+    }
+
+    #gameContainer {
+
+      margin-top: 20px;
+
+      padding-bottom: 50px;
+
+    }
+
+    #screenshot {
+
+      width: 900px;
+
+      max-width: 95%;
+
+      border-radius: 18px;
+
+      border:
+      2px solid rgba(255,255,255,0.08);
+
+      box-shadow:
+      0 0 30px rgba(0,0,0,0.5),
+      0 0 60px rgba(138,180,255,0.08);
+
+      transition: 0.3s;
+
+    }
+
+    #mapContainer {
+
+      position: relative;
+
+      display: inline-block;
+
+      margin-top: 25px;
+
+      animation: fadeIn 0.5s ease;
+
+    }
+
+    #map {
+
+      width: 800px;
+
+      max-width: 95%;
+
+      border-radius: 14px;
+
+      cursor: crosshair;
+
+      border:
+      2px solid rgba(255,255,255,0.08);
+
+      box-shadow:
+      0 0 20px rgba(0,0,0,0.4);
+
+    }
+
+    .dot {
+
+      width: 18px;
+
+      height: 18px;
+
+      border-radius: 50%;
+
+      position: absolute;
+
+      display: none;
+
+      transform:
+      translate(-50%, -50%);
+
+      border: 2px solid white;
+
+      animation:
+      popIn 0.25s ease;
+
+    }
+
+    #redDot {
+
+      background: red;
+
+    }
+
+    #blueDot {
+
+      background: dodgerblue;
+
+    }
+
+    #resultBox {
+
+      margin-top: 20px;
+
+      font-size: 28px;
+
+      min-height: 60px;
+
+      color: #e2e8f0;
+
+    }
+
+    #nextButton {
+
+      margin-top: 20px;
+
+      padding: 14px 30px;
+
+      font-size: 22px;
+
+      border: none;
+
+      border-radius: 14px;
+
+      background:
+      linear-gradient(
+        90deg,
+        #4f8cff,
+        #6aa8ff
+      );
+
+      color: white;
+
+      cursor: pointer;
+
+      transition: 0.25s;
+
+      display: none;
+
+    }
+
+    #nextButton:hover {
+
+      transform: scale(1.05);
+
+      box-shadow:
+      0 0 25px rgba(79,140,255,0.8);
+
+    }
+
+    @keyframes popIn {
+
+      from {
+
+        transform:
+        translate(-50%, -50%)
+        scale(0);
+
+      }
+
+      to {
+
+        transform:
+        translate(-50%, -50%)
+        scale(1);
+
+      }
+
+    }
+
+    @keyframes fadeIn {
+
+      from {
+
+        opacity: 0;
+
+      }
+
+      to {
+
+        opacity: 1;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- MUSIC -->
+
+  <audio id="bgMusic" autoplay loop>
+
+    <source
+      src="music/song_of_ku_roro.mp3"
+      type="audio/mpeg">
+
+  </audio>
+
+  <!-- TITLE -->
+
+  <h1>Wuthering Waves GeoGuessr</h1>
+
+  <div id="creatorText">
+    Made by KitsuneCh
+  </div>
+
+  <!-- TOP BAR -->
+
+  <div id="topBar">
+
+    <div class="topBox">
+
+      Round:
+      <span id="roundText">1</span>
+
+    </div>
+
+    <div class="topBox">
+
+      Score:
+      <span id="scoreText">0</span>
+
+    </div>
+
+    <div class="topBox">
+
+      Time:
+      <span id="timerText">30</span>
+
+    </div>
+
+  </div>
+
+  <!-- MUSIC BUTTON -->
+
+  <button id="musicButton">
+
+    🔊 Music
+
+  </button>
+
+  <!-- GAME -->
+
+  <div id="gameContainer">
+
+    <!-- SCREENSHOT -->
+
+    <img id="screenshot"
+         src="screenshots/blackshores1.png">
+
+    <!-- MAP -->
+
+    <div id="mapContainer">
+
+      <img id="map"
+           src="maps/blackshores_map.png">
+
+      <!-- CORRECT DOT -->
+
+      <div id="redDot"
+           class="dot">
+      </div>
+
+      <!-- PLAYER DOT -->
+
+      <div id="blueDot"
+           class="dot">
+      </div>
+
+    </div>
+
+    <!-- RESULT -->
+
+    <div id="resultBox"></div>
+
+    <!-- NEXT BUTTON -->
+
+    <button id="nextButton">
+
+      Next Round
+
+    </button>
+
+  </div>
+
+  <script>
+
+    // =========================
+    // GAME DATA
+    // =========================
+
+    const rounds = [
+
+      {
+        image: "screenshots/blackshores1.png",
+        answerX: 343,
+        answerY: 483
+      },
+
+      {
+        image: "screenshots/blackshores2.png",
+        answerX: 248,
+        answerY: 462
+      },
+
+      {
+        image: "screenshots/blackshores3.png",
+        answerX: 324,
+        answerY: 361
+      },
+
+      {
+        image: "screenshots/blackshores4.png",
+        answerX: 324,
+        answerY: 213
+      },
+
+      {
+        image: "screenshots/blackshores5.png",
+        answerX: 494,
+        answerY: 286
+      },
+
+      {
+        image: "screenshots/blackshores6.png",
+        answerX: 554,
+        answerY: 398
+      },
+
+      {
+        image: "screenshots/blackshores7.png",
+        answerX: 477,
+        answerY: 684
+      },
+
+      {
+        image: "screenshots/blackshores8.png",
+        answerX: 492,
+        answerY: 152
+      },
+
+      {
+        image: "screenshots/blackshores9.png",
+        answerX: 322,
+        answerY: 169
+      },
+
+      {
+        image: "screenshots/blackshores10.png",
+        answerX: 206,
+        answerY: 233
+      }
+
+    ];
+
+    // =========================
+    // PRELOAD IMAGES
+    // =========================
+
+    for (const round of rounds) {
+
+      const img = new Image();
+
+      img.src = round.image;
+
+    }
+
+    // =========================
+    // ELEMENTS
+    // =========================
+
+    const screenshot =
+      document.getElementById("screenshot");
+
+    const map =
+      document.getElementById("map");
+
+    const redDot =
+      document.getElementById("redDot");
+
+    const blueDot =
+      document.getElementById("blueDot");
+
+    const resultBox =
+      document.getElementById("resultBox");
+
+    const nextButton =
+      document.getElementById("nextButton");
+
+    const scoreText =
+      document.getElementById("scoreText");
+
+    const roundText =
+      document.getElementById("roundText");
+
+    const timerText =
+      document.getElementById("timerText");
+
+    const bgMusic =
+      document.getElementById("bgMusic");
+
+    const musicButton =
+      document.getElementById("musicButton");
+
+    // =========================
+    // GAME VARIABLES
+    // =========================
+
+    let currentRound = 0;
+
+    let totalScore = 0;
+
+    let canGuess = true;
+
+    let timer = 30;
+
+    let timerInterval;
+
+    // =========================
+    // MUSIC TOGGLE
+    // =========================
+
+    musicButton.addEventListener(
+      "click",
+      function() {
+
+        if (bgMusic.paused) {
+
+          bgMusic.play();
+
+          musicButton.innerText =
+            "🔊 Music";
+
+        } else {
+
+          bgMusic.pause();
+
+          musicButton.innerText =
+            "🔇 Muted";
+
+        }
+
+      }
+    );
+
+    // =========================
+    // LOAD ROUND
+    // =========================
+
+    function loadRound() {
+
+      const round =
+        rounds[currentRound];
+
+      screenshot.style.opacity = 0;
+
+      setTimeout(function() {
+
+        screenshot.src =
+          round.image;
+
+        screenshot.style.opacity = 1;
+
+      }, 100);
+
+      redDot.style.display = "none";
+
+      blueDot.style.display = "none";
+
+      resultBox.innerHTML = "";
+
+      nextButton.style.display =
+        "none";
+
+      roundText.innerText =
+        currentRound + 1;
+
+      canGuess = true;
+
+      startTimer();
+
+    }
+
+    // =========================
+    // TIMER
+    // =========================
+
+    function startTimer() {
+
+      clearInterval(timerInterval);
+
+      timer = 30;
+
+      timerText.innerText = timer;
+
+      timerInterval = setInterval(
+        function() {
+
+          timer--;
+
+          timerText.innerText = timer;
+
+          if (timer <= 0) {
+
+            clearInterval(timerInterval);
+
+            canGuess = false;
+
+            resultBox.innerHTML =
+              "Time's Up!";
+
+            nextButton.style.display =
+              "inline-block";
+
+          }
+
+        },
+        1000
+      );
+
+    }
+
+    // =========================
+    // CLICK MAP
+    // =========================
+
+    map.addEventListener(
+      "click",
+      function(event) {
+
+        if (!canGuess) return;
+
+        canGuess = false;
+
+        clearInterval(timerInterval);
+
+        const rect =
+          map.getBoundingClientRect();
+
+        const x =
+          event.clientX - rect.left;
+
+        const y =
+          event.clientY - rect.top;
+
+        const round =
+          rounds[currentRound];
+
+        // PLAYER DOT
+
+        blueDot.style.display =
+          "block";
+
+        blueDot.style.left =
+          x + "px";
+
+        blueDot.style.top =
+          y + "px";
+
+        // CORRECT DOT
+
+        redDot.style.display =
+          "block";
+
+        redDot.style.left =
+          round.answerX + "px";
+
+        redDot.style.top =
+          round.answerY + "px";
+
+        // DISTANCE
+
+        const distance = Math.sqrt(
+
+          (x - round.answerX) ** 2 +
+
+          (y - round.answerY) ** 2
+
+        );
+
+        // SCORE
+
+        let roundScore =
+          Math.round(
+            5000 - distance * 10
+          );
+
+        if (roundScore < 0) {
+
+          roundScore = 0;
+
+        }
+
+        totalScore += roundScore;
+
+        scoreText.innerText =
+          totalScore;
+
+        resultBox.innerHTML =
+
+          "Round Score: " +
+
+          roundScore +
+
+          "<br><br>" +
+
+          "Distance: " +
+
+          Math.round(distance);
+
+        nextButton.style.display =
+          "inline-block";
+
+      }
+    );
+
+    // =========================
+    // NEXT ROUND
+    // =========================
+
+    nextButton.addEventListener(
+      "click",
+      function() {
+
+        currentRound++;
+
+        if (
+          currentRound >= rounds.length
+        ) {
+
+          resultBox.innerHTML =
+
+            "<span style='color:#8ab4ff; font-size:40px;'>BLACK SHORES CLEARED</span>" +
+
+            "<br><br>" +
+
+            "Final Score: " +
+
+            totalScore;
+
+          nextButton.style.display =
+            "none";
+
+          return;
+
+        }
+
+        loadRound();
+
+      }
+    );
+
+    // =========================
+    // START GAME
+    // =========================
+
+    loadRound();
+
+  </script>
+
+</body>
+</html>
+Have Fun
