@@ -64,6 +64,17 @@
 
     }
 
+#creatorLogo {
+
+  width: 40px;
+
+  height: 40px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+}
     #topBar {
 
       display: flex;
@@ -130,7 +141,49 @@
       transform: scale(1.03);
 
     }
+    
+#menuContainer {
 
+  margin-top: 20px;
+
+}
+
+#mapSelect {
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  border: none;
+
+  font-size: 18px;
+
+  margin-right: 10px;
+
+}
+
+#startMapButton {
+
+  padding: 12px 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+  background:
+  linear-gradient(
+    90deg,
+    #4f8cff,
+    #6aa8ff
+  );
+
+  color: white;
+
+}
     #gameContainer {
 
       margin-top: 20px;
@@ -160,33 +213,39 @@
 
     #mapContainer {
 
-      position: relative;
+  position: relative;
 
-      display: inline-block;
+  display: inline-block;
 
-      margin-top: 25px;
+  margin-top: 25px;
 
-      animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.5s ease;
 
-    }
+  transform-origin: top center;
+
+  transition: transform 0.15s ease;
+
+}
 
     #map {
 
-      width: 800px;
+  width: 800px;
 
-      max-width: 95%;
+  max-width: 95%;
 
-      border-radius: 14px;
+  display: block;
 
-      cursor: crosshair;
+  border-radius: 14px;
 
-      border:
-      2px solid rgba(255,255,255,0.08);
+  cursor: crosshair;
 
-      box-shadow:
-      0 0 20px rgba(0,0,0,0.4);
+  border:
+  2px solid rgba(255,255,255,0.08);
 
-    }
+  box-shadow:
+  0 0 20px rgba(0,0,0,0.4);
+
+}
 
     .dot {
 
@@ -329,9 +388,39 @@
   <h1>Wuthering Waves GeoGuessr</h1>
 
   <div id="creatorText">
+
+  <img
+    src="./icon/logo.png"
+    id="creatorLogo"
+  >
+
+  <div>
     Made by KitsuneCh
   </div>
 
+</div>
+
+<!-- MAP SELECT MENU -->
+
+<div id="menuContainer">
+
+  <select id="mapSelect">
+
+    <option value="blackshores">
+      Black Shores
+    </option>
+
+    <option value="tethys">
+      Tethys Deep
+    </option>
+
+  </select>
+
+  <button id="startMapButton">
+    Start Game
+  </button>
+
+</div>
   <!-- TOP BAR -->
 
   <div id="topBar">
@@ -413,77 +502,150 @@
 
   <script>
 
-    // =========================
-    // GAME DATA
-    // =========================
+  // =========================
+  // GAME DATA
+  // =========================
 
-    const rounds = [
+  const blackshoresRounds = [
 
-      {
-        image: "./Screenshots/blackshores1.png",
-        answerX: 343,
-        answerY: 483
-      },
+  {
+    image: "./Screenshots/blackshores1.png",
+    answerX: 343,
+    answerY: 483
+  },
 
-      {
-        image: "./Screenshots/blackshores2.png",
-        answerX: 248,
-        answerY: 462
-      },
+  {
+    image: "./Screenshots/blackshores2.png",
+    answerX: 248,
+    answerY: 462
+  },
 
-      {
-        image: "./Screenshots/blackshores3.png",
-        answerX: 324,
-        answerY: 361
-      },
+  {
+    image: "./Screenshots/blackshores3.png",
+    answerX: 324,
+    answerY: 361
+  },
 
-      {
-        image: "./Screenshots/blackshores4.png",
-        answerX: 324,
-        answerY: 213
-      },
+  {
+    image: "./Screenshots/blackshores4.png",
+    answerX: 324,
+    answerY: 213
+  },
 
-      {
-        image: "./Screenshots/blackshores5.png",
-        answerX: 494,
-        answerY: 286
-      },
+  {
+    image: "./Screenshots/blackshores5.png",
+    answerX: 494,
+    answerY: 286
+  },
 
-      {
-        image: "./Screenshots/blackshores6.png",
-        answerX: 554,
-        answerY: 398
-      },
+  {
+    image: "./Screenshots/blackshores6.png",
+    answerX: 554,
+    answerY: 398
+  },
 
-      {
-        image: "./Screenshots/blackshores7.png",
-        answerX: 477,
-        answerY: 684
-      },
+  {
+    image: "./Screenshots/blackshores7.png",
+    answerX: 477,
+    answerY: 684
+  },
 
-      {
-        image: "./Screenshots/blackshores8.png",
-        answerX: 492,
-        answerY: 152
-      },
+  {
+    image: "./Screenshots/blackshores8.png",
+    answerX: 492,
+    answerY: 152
+  },
 
-      {
-        image: "./Screenshots/blackshores9.png",
-        answerX: 322,
-        answerY: 169
-      },
+  {
+    image: "./Screenshots/blackshores9.png",
+    answerX: 322,
+    answerY: 169
+  },
 
-      {
-        image: "./Screenshots/blackshores10.png",
-        answerX: 206,
-        answerY: 233
-      }
+  {
+    image: "./Screenshots/blackshores10.png",
+    answerX: 206,
+    answerY: 233
+  }
 
-    ];
+];
 
-    // =========================
-    // PRELOAD IMAGES
-    // =========================
+  // =========================
+  // TETHYS MAP
+  // =========================
+
+  const tethysRounds = [];
+
+  // =========================
+  // CURRENT GAME
+  // =========================
+
+  let rounds = [];
+
+  let currentMapName = "";
+
+  // =========================
+  // ELEMENTS
+  // =========================
+
+  const screenshot =
+    document.getElementById("screenshot");
+
+  const map =
+    document.getElementById("map");
+
+  const redDot =
+    document.getElementById("redDot");
+
+  const blueDot =
+    document.getElementById("blueDot");
+
+  const resultBox =
+    document.getElementById("resultBox");
+
+  const nextButton =
+    document.getElementById("nextButton");
+
+  const scoreText =
+    document.getElementById("scoreText");
+
+  const roundText =
+    document.getElementById("roundText");
+
+  const timerText =
+    document.getElementById("timerText");
+
+  const bgMusic =
+    document.getElementById("bgMusic");
+
+  const musicButton =
+    document.getElementById("musicButton");
+
+  const mapSelect =
+    document.getElementById("mapSelect");
+
+  const startMapButton =
+    document.getElementById("startMapButton");
+
+  // =========================
+  // GAME VARIABLES
+  // =========================
+
+  let currentRound = 0;
+
+  let totalScore = 0;
+
+  let canGuess = true;
+
+  let timer = 30;
+
+  let timerInterval;
+
+  // =========================
+  // PRELOAD IMAGES
+  // =========================
+
+  function preloadImages() {
 
     for (const round of rounds) {
 
@@ -493,298 +655,323 @@
 
     }
 
-    // =========================
-    // ELEMENTS
-    // =========================
+  }
 
-    const screenshot =
-      document.getElementById("screenshot");
+  // =========================
+  // MUSIC TOGGLE
+  // =========================
 
-    const map =
-      document.getElementById("map");
+  musicButton.addEventListener(
+    "click",
+    function() {
 
-    const redDot =
-      document.getElementById("redDot");
+      if (bgMusic.paused) {
 
-    const blueDot =
-      document.getElementById("blueDot");
+        bgMusic.play();
 
-    const resultBox =
-      document.getElementById("resultBox");
+        musicButton.innerText =
+          "🔊 Music";
 
-    const nextButton =
-      document.getElementById("nextButton");
+      } else {
 
-    const scoreText =
-      document.getElementById("scoreText");
+        bgMusic.pause();
 
-    const roundText =
-      document.getElementById("roundText");
-
-    const timerText =
-      document.getElementById("timerText");
-
-    const bgMusic =
-      document.getElementById("bgMusic");
-
-    const musicButton =
-      document.getElementById("musicButton");
-
-    // =========================
-    // GAME VARIABLES
-    // =========================
-
-    let currentRound = 0;
-
-    let totalScore = 0;
-
-    let canGuess = true;
-
-    let timer = 30;
-
-    let timerInterval;
-
-    // =========================
-    // MUSIC TOGGLE
-    // =========================
-
-    musicButton.addEventListener(
-      "click",
-      function() {
-
-        if (bgMusic.paused) {
-
-          bgMusic.play();
-
-          musicButton.innerText =
-            "🔊 Music";
-
-        } else {
-
-          bgMusic.pause();
-
-          musicButton.innerText =
-            "🔇 Muted";
-
-        }
+        musicButton.innerText =
+          "🔇 Muted";
 
       }
-    );
-
-    // =========================
-    // LOAD ROUND
-    // =========================
-
-    function loadRound() {
-
-      const round =
-        rounds[currentRound];
-
-      screenshot.style.opacity = 0;
-
-      setTimeout(function() {
-
-        screenshot.src =
-          round.image;
-
-        screenshot.style.opacity = 1;
-
-      }, 100);
-
-      redDot.style.display = "none";
-
-      blueDot.style.display = "none";
-
-      resultBox.innerHTML = "";
-
-      nextButton.style.display =
-        "none";
-
-      roundText.innerText =
-        currentRound + 1;
-
-      canGuess = true;
-
-      startTimer();
 
     }
+  );
 
-    // =========================
-    // TIMER
-    // =========================
+  // =========================
+  // LOAD ROUND
+  // =========================
 
-    function startTimer() {
+  function loadRound() {
 
-      clearInterval(timerInterval);
+    const round =
+      rounds[currentRound];
 
-      timer = 30;
+    screenshot.style.opacity = 0;
 
-      timerText.innerText = timer;
+    setTimeout(function() {
 
-      timerInterval = setInterval(
-        function() {
+      screenshot.src =
+        round.image;
 
-          timer--;
+      screenshot.style.opacity = 1;
 
-          timerText.innerText = timer;
+    }, 100);
 
-          if (timer <= 0) {
+    redDot.style.display = "none";
 
-            clearInterval(timerInterval);
+    blueDot.style.display = "none";
 
-            canGuess = false;
+    resultBox.innerHTML = "";
 
-            resultBox.innerHTML =
-              "Time's Up!";
+    nextButton.style.display =
+      "none";
 
-            nextButton.style.display =
-              "inline-block";
+    roundText.innerText =
+      currentRound + 1;
 
-          }
+    canGuess = true;
 
-        },
-        1000
-      );
+    startTimer();
 
-    }
+  }
 
-    // =========================
-    // CLICK MAP
-    // =========================
+  // =========================
+  // TIMER
+  // =========================
 
-    map.addEventListener(
-      "click",
-      function(event) {
+  function startTimer() {
 
-        if (!canGuess) return;
+    clearInterval(timerInterval);
 
-        canGuess = false;
+    timer = 30;
 
-        clearInterval(timerInterval);
+    timerText.innerText = timer;
 
-        const rect =
-          map.getBoundingClientRect();
+    timerInterval = setInterval(
+      function() {
 
-        const x =
-          event.clientX - rect.left;
+        timer--;
 
-        const y =
-          event.clientY - rect.top;
+        timerText.innerText = timer;
 
-        const round =
-          rounds[currentRound];
+        if (timer <= 0) {
 
-        // PLAYER DOT
+          clearInterval(timerInterval);
 
-        blueDot.style.display =
-          "block";
+          canGuess = false;
 
-        blueDot.style.left =
-          x + "px";
+          resultBox.innerHTML =
+            "Time's Up!";
 
-        blueDot.style.top =
-          y + "px";
-
-        // CORRECT DOT
-
-        redDot.style.display =
-          "block";
-
-        redDot.style.left =
-          round.answerX + "px";
-
-        redDot.style.top =
-          round.answerY + "px";
-
-        // DISTANCE
-
-        const distance = Math.sqrt(
-
-          (x - round.answerX) ** 2 +
-
-          (y - round.answerY) ** 2
-
-        );
-
-        // SCORE
-
-        let roundScore =
-          Math.round(
-            5000 - distance * 10
-          );
-
-        if (roundScore < 0) {
-
-          roundScore = 0;
+          nextButton.style.display =
+            "inline-block";
 
         }
 
-        totalScore += roundScore;
+      },
+      1000
+    );
 
-        scoreText.innerText =
-          totalScore;
+  }
+
+  // =========================
+// MAP CLICK
+// =========================
+
+map.addEventListener(
+  "click",
+  function(event) {
+
+    if (!canGuess) return;
+
+    canGuess = false;
+
+    clearInterval(timerInterval);
+
+    const round =
+      rounds[currentRound];
+
+    const rect =
+      map.getBoundingClientRect();
+
+    // CLICK POSITION INSIDE DISPLAYED IMAGE
+    const clickX =
+      event.clientX - rect.left;
+
+    const clickY =
+      event.clientY - rect.top;
+
+    // SCALE TO ORIGINAL IMAGE SIZE
+    const scaleX =
+      map.naturalWidth / rect.width;
+
+    const scaleY =
+      map.naturalHeight / rect.height;
+
+    // REAL COORDINATES
+    const x =
+  clickX * scaleX;
+
+const y =
+  clickY * scaleY;
+
+console.log(
+  "X:",
+  Math.round(x),
+  "Y:",
+  Math.round(y)
+);
+
+    // PLAYER DOT
+    blueDot.style.display =
+      "block";
+
+    blueDot.style.left =
+      clickX + "px";
+
+    blueDot.style.top =
+      clickY + "px";
+
+    // CORRECT DOT
+    redDot.style.display =
+      "block";
+
+    redDot.style.left =
+  round.answerX + "px";
+
+redDot.style.top =
+  round.answerY + "px";
+
+    // DISTANCE
+    const distance = Math.sqrt(
+
+      (x - round.answerX) ** 2 +
+
+      (y - round.answerY) ** 2
+
+    );
+
+    // SCORE
+    let roundScore =
+      Math.round(
+        100 - distance / 8
+      );
+
+    if (roundScore < 0) {
+
+      roundScore = 0;
+
+    }
+
+    totalScore += roundScore;
+
+    scoreText.innerText =
+      totalScore;
+
+    resultBox.innerHTML =
+
+      "Round Score: " +
+
+      roundScore +
+
+      "<br><br>" +
+
+      "Distance: " +
+
+      Math.round(distance);
+
+    nextButton.style.display =
+      "inline-block";
+
+  }
+);
+
+  // =========================
+  // NEXT ROUND
+  // =========================
+
+  nextButton.addEventListener(
+    "click",
+    function() {
+
+      currentRound++;
+
+      if (
+        currentRound >= rounds.length
+      ) {
 
         resultBox.innerHTML =
 
-          "Round Score: " +
+          "<span style='color:#8ab4ff; font-size:40px;'>" +
 
-          roundScore +
+          currentMapName +
+
+          " CLEARED</span>" +
 
           "<br><br>" +
 
-          "Distance: " +
+          "Final Score: " +
 
-          Math.round(distance);
+          totalScore;
 
         nextButton.style.display =
-          "inline-block";
+          "none";
+
+        return;
 
       }
-    );
 
-    // =========================
-    // NEXT ROUND
-    // =========================
+      loadRound();
 
-    nextButton.addEventListener(
-      "click",
-      function() {
+    }
+  );
 
-        currentRound++;
+  // =========================
+  // START GAME
+  // =========================
 
-        if (
-          currentRound >= rounds.length
-        ) {
+  startMapButton.addEventListener(
+    "click",
+    function() {
 
-          resultBox.innerHTML =
+      currentRound = 0;
 
-            "<span style='color:#8ab4ff; font-size:40px;'>BLACK SHORES CLEARED</span>" +
+      totalScore = 0;
 
-            "<br><br>" +
+      scoreText.innerText = 0;
 
-            "Final Score: " +
+      // BLACK SHORES
 
-            totalScore;
+      if (
+        mapSelect.value ===
+        "blackshores"
+      ) {
 
-          nextButton.style.display =
-            "none";
+        rounds =
+          blackshoresRounds;
 
-          return;
+        currentMapName =
+          "BLACK SHORES";
 
-        }
-
-        loadRound();
+        map.src =
+          "./Maps/blackshores_map.png";
 
       }
-    );
 
-    // =========================
-    // START GAME
-    // =========================
+      // TETHYS
 
-    loadRound();
+      if (
+        mapSelect.value ===
+        "tethys"
+      ) {
 
-  </script>
+        rounds =
+          tethysRounds;
+
+        currentMapName =
+          "TETHYS DEEP";
+
+        map.src =
+          "./Maps/tethys_map.png";
+
+      }
+
+      preloadImages();
+      
+loadRound();
+      
+
+    }
+  );
+   
+</script>
 
 </body>
 </html>
